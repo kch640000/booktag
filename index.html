@@ -6,12 +6,13 @@
      ========================================================== -->
 <script>
 window.FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyBbQCaoQv867EjEYVZ-d6spJr6H_4aFn6E",
+  authDomain: "booktag-10ce5.firebaseapp.com",
+  projectId: "booktag-10ce5",
+  storageBucket: "booktag-10ce5.firebasestorage.app",
+  messagingSenderId: "676578585894",
+  appId: "1:676578585894:web:817b2e4e52835f4d1b25e7",
+  measurementId: "G-QWB1W6ETNL"
 };
 </script>
 <html lang="ko">
@@ -388,16 +389,18 @@ $("bSave").onclick = async () => {
 
 // ===== Firebase =====
 let db = null, fb = null, authMod = null, auth = null;
-const ready = !!firebaseConfig.projectId;
+let ready = !!firebaseConfig.projectId;
 if (ready) {
+  try {
   const V = "10.12.2";
   const app = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
   fb = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
   authMod = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
   const a = app.initializeApp(firebaseConfig); db = fb.getFirestore(a); auth = authMod.getAuth(a);
+  } catch (e) { console.error(e); ready = false; window.__fbErr = true; }
 }
 async function submit(doc, msgId, btn) {
-  if (!ready) return say(msgId, "아직 선생님이 제출 기능을 연결하지 않았어요. '이미지 저장'으로 저장해 두세요.", "err");
+  if (!ready) return say(msgId, window.__fbErr ? "인터넷 연결이 불안정해 제출하지 못했어요. 새로고침 후 다시 눌러 주세요. 급하면 '이미지 저장'으로 저장해 두세요." : "아직 선생님이 제출 기능을 연결하지 않았어요. '이미지 저장'으로 저장해 두세요.", "err");
   btn.disabled = true; say(msgId, "제출하는 중…");
   try {
     await fb.addDoc(fb.collection(db, COLLECTION), { ...doc, createdAt: fb.serverTimestamp() });
